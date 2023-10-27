@@ -1,2 +1,2 @@
-# predictive-analytics-ytvideos-utils
-Utils for YT video predictive analytics
+# yt-utils
+Utils for YouTube video predictive analytics
