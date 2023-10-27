@@ -1,0 +1,10 @@
+name: yt_utils
+channels:
+  - defaults
+dependencies:
+  - python=3.11.5
+  - pandas=2.0.3
+  - numpy=1.25.2
+  - pytest=7.1.2
+  - poetry=1.4.0
+prefix: /home/nuc/miniconda3/envs/yt_utils
