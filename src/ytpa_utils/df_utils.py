@@ -1,26 +1,12 @@
-
+""" Array, DataFrame, and SQL ops """
 
 from typing import List, Optional
 import pandas as pd
 import numpy as np
 
-from src.yt_utils.val_utils import is_subset
+from .val_utils import is_subset, is_int_or_float
 
 
-
-""" Array, DataFrame, and SQL ops """
-def df_generator_wrapper(func):
-    """
-    Wrapper for handling StopIteration and other generator exceptions when yielding a DataFrame.
-    Use this to decorate functions that return a DataFrame.
-    """
-    def wrap(*args, **kwargs):
-        while 1:
-            try:
-                yield func(*args, **kwargs)
-            except StopIteration:
-                yield pd.DataFrame()
-    return wrap
 
 def join_on_dfs(df0: pd.DataFrame,
                 df1: pd.DataFrame,
@@ -33,8 +19,19 @@ def join_on_dfs(df0: pd.DataFrame,
         SELECT df0.col00, df0.col01, df1.col10 FROM df0 JOIN ON df0.index_key0 = df1.index_key0
 
     The index keys in df0 are treated like foreign keys into df1.
+
+    A typical use case is where df0 has many records where groups of those records correspond to measurements of a
+    single data source over time. The time-independent metadata/features for a data source is stored in a row of df1,
+    which acts like a lookup table.
     """
-    # TODO: handle case where index keys in df0 don't exist in df1
+    # make sure index keys exist in both DataFrames
+    assert is_subset(index_keys, df0.columns)
+    assert is_subset(index_keys, df1.columns)
+
+    # make sure that no double-selection is happening
+    if df0_keys_select and df1_keys_select:
+        assert len(set(df0_keys_select).intersection(df1_keys_select)) == 0
+
     # perform select on df0
     if df0_keys_select is not None:
         df0_select = df0[df0_keys_select]
@@ -60,30 +57,27 @@ def join_on_dfs(df0: pd.DataFrame,
     df1_select = df1_select.set_index(df0.index)
 
     # concatenate
-    df = pd.concat((df0_select, df1_select), axis=1)
-
-    return df
+    return pd.concat((df0_select, df1_select), axis=1)
 
 def convert_mixed_df_to_array(df: pd.DataFrame,
-                              cols: Optional[List[str]] = None) \
+                              cols: List[str]) \
         -> np.ndarray:
     """
     Convert DataFrame with mixed-type columns into a numpy array.
     Only converts numerical columns. Emits warning for non-numerical/list-type columns.
     """
-    if cols is None:
-        cols = df.columns
+    assert is_subset(cols, df.columns)
 
     data: List[np.ndarray] = []
     for col in cols:
         data_ = df[col]
         samp0 = data_.iloc[0]
-        if isinstance(samp0, (int, float, np.int64, np.float64)):
+        if is_int_or_float(samp0):
             data.append(data_.to_numpy()[:, np.newaxis])
-        elif isinstance(samp0, list):
+        elif isinstance(samp0, list) and is_int_or_float(samp0[0]):
             data.append(np.array(list(data_)))
         else:
-            print(f'convert_mixed_df_to_array() -> Skipping column {col} with invalid raw_data type {type(samp0)}.')
+            raise Exception(f'convert_mixed_df_to_array() -> Column {col} has invalid data type {type(samp0)}.')
 
     return np.hstack(data)
 

@@ -1,7 +1,7 @@
 """Miscellaneous utils"""
 
 import re
-from typing import Union, List, Optional
+from typing import Union, List, Optional, Tuple
 import time
 from PIL import Image
 import requests
@@ -35,7 +35,7 @@ def convert_num_str_to_int(s: str) -> int:
 def apply_regex(s: str,
                 regex: str,
                 dtype: Optional[str] = None) \
-        -> Union[List[str], str, int]:
+        -> Union[List[Tuple[str]], str, int]:
     """
     Apply regex to string to extract a string. Can handle further parsing if string is a number.
     Assumes regex is specified as string with embedded (.*?) to find substring.

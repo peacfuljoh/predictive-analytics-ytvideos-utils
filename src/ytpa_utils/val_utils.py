@@ -1,12 +1,9 @@
 """ Object format validation """
 
-from typing import Optional, Any, Sequence, Callable
+from typing import Optional, Any, Sequence, Callable, Union, Set
 import datetime
 
-
-
-
-
+import numpy as np
 
 
 def is_datetime_formatted_str(s: Any, fmt: str) -> bool:
@@ -25,7 +22,7 @@ def is_list_of_strings(obj: Sequence) -> bool:
 
 def is_list_of_floats(obj: Sequence) -> bool:
     """Check if object is a list of floats."""
-    return isinstance(obj, list) and all([isinstance(val, float) for val in obj])
+    return isinstance(obj, list) and all([isinstance(val, (int, float)) for val in obj])
 
 def is_list_of_list_of_strings(obj: Sequence) -> bool:
     """Check that iterable is a list of lists of strings."""
@@ -50,8 +47,8 @@ def is_list_of_list_of_time_range_strings(obj: Sequence,
         return len_cond and all([is_list_of_formatted_strings(lst, func, list_len=2) for lst in obj])
     return False
 
-def is_subset(obj1: Sequence,
-              obj2: Sequence) \
+def is_subset(obj1: Union[Sequence, Set],
+              obj2: Union[Sequence, Set]) \
         -> bool:
     """
     Check that the elements in one iterable comprise a subset of the elements in the other.
@@ -82,3 +79,7 @@ def is_dict_of_instances(obj: Sequence,
         -> bool:
     """Check that object is a dict of objects of a specified instance."""
     return isinstance(obj, dict) and all([isinstance(val, type) for key, val in obj.items()])
+
+
+def is_int_or_float(val) -> bool:
+    return isinstance(val, (int, float, np.int64, np.float64))

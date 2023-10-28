@@ -6,12 +6,16 @@ import time
 from datetime import timedelta
 import copy
 
+from ..constants import DT_FMT_DATE, DT_FMT_SEC, DT_FMT_US, TESTING, DT_STR_TEST_US
 
 
 
 def get_dt_now() -> datetime.datetime:
     """Get current datetime"""
-    return datetime.datetime.fromtimestamp(time.time())
+    if TESTING[0]:
+        return datetime.datetime.strptime(DT_STR_TEST_US, DT_FMT_US)
+    else:
+        return datetime.datetime.fromtimestamp(time.time())
 
 def get_ts_now_formatted(fmt: str,
                          offset: Optional[datetime.timedelta] = None) \
@@ -31,11 +35,11 @@ def get_ts_now_str(mode: str,
 
     # infer format
     if mode == 'date':
-        fmt = '%Y-%m-%d'
+        fmt = DT_FMT_DATE
     elif mode == 's':
-        fmt = '%Y-%m-%d %H:%M:%S'
+        fmt = DT_FMT_SEC
     elif mode in ['ms', 'us']:
-        fmt = '%Y-%m-%d %H:%M:%S.%f'
+        fmt = DT_FMT_US
     else:
         raise NotImplementedError
 

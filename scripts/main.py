@@ -1,5 +1,5 @@
 
-from src.yt_utils.time_utils import get_ts_now_str
+from src.ytpa_utils.time_utils import get_ts_now_str
 
 
 

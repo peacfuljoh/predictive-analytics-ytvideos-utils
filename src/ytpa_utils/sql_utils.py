@@ -2,7 +2,7 @@
 
 from typing import Union, List, Dict, Optional
 
-from src.yt_utils.val_utils import is_list_of_strings
+from .val_utils import is_list_of_strings
 
 
 
@@ -43,7 +43,7 @@ def make_sql_query(tablename: str,
         where_clauses = []
         for key, val in where.items():
             where_clauses.append(make_sql_query_where_one(tablename, key, val))
-        query += ' WHERE ' + ' AND '.join(where_clauses)
+        query += ' WHERE' + ' AND '.join(where_clauses)
 
     # limit
     if limit is not None:
