@@ -8,7 +8,7 @@ from src.ytpa_utils.val_utils import (is_dict_of_instances, is_list_of_formatted
                                       is_list_of_list_of_time_range_strings, is_list_of_floats,
                                       is_datetime_formatted_str, is_int_or_float, is_subset,
                                       is_list_of_sequences, is_list_of_strings, is_list_of_list_of_strings)
-from src.constants import DT_FMT_DATE, DT_FMT_US
+from src.ytpa_utils.constants import DT_FMT_DATE, DT_FMT_US
 
 
 

@@ -1,11 +1,10 @@
 
 import datetime
 
-from src.constants import (TESTING, DT_STR_TEST_US, DT_STR_TEST_DATE, DT_STR_TEST_S, DT_STR_TEST_MS,
-                           DT_STR_TEST_DATE_OFFSET, DT_STR_TEST_S_OFFSET, DT_STR_TEST_MS_OFFSET, DT_STR_TEST_US_OFFSET,
-                           DT_FMT_DATE, DT_FMT_SEC, DT_FMT_MS, DT_FMT_US)
-from src.ytpa_utils.time_utils import get_ts_now_formatted, get_ts_now_str, get_dt_now, TimeLock
-
+from src.ytpa_utils.constants import (TESTING, DT_STR_TEST_US, DT_STR_TEST_DATE, DT_STR_TEST_S, DT_STR_TEST_MS,
+                                      DT_STR_TEST_DATE_OFFSET, DT_STR_TEST_S_OFFSET, DT_STR_TEST_MS_OFFSET, DT_STR_TEST_US_OFFSET,
+                                      DT_FMT_DATE, DT_FMT_SEC, DT_FMT_MS, DT_FMT_US)
+from src.ytpa_utils.time_utils import get_ts_now_formatted, get_ts_now_str, get_dt_now
 
 
 def test_get_ts_now_formatted():

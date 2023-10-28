@@ -6,7 +6,7 @@ import time
 from datetime import timedelta
 import copy
 
-from ..constants import DT_FMT_DATE, DT_FMT_SEC, DT_FMT_US, TESTING, DT_STR_TEST_US
+from .constants import DT_FMT_DATE, DT_FMT_SEC, DT_FMT_US, TESTING, DT_STR_TEST_US
 
 
 
