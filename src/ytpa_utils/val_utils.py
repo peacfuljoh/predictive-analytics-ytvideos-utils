@@ -77,9 +77,14 @@ def is_list_of_sequences(obj: Sequence,
 def is_dict_of_instances(obj: Sequence,
                          type) \
         -> bool:
-    """Check that object is a dict of objects of a specified instance."""
+    """Check that object is a dict of objects of specified instance(s)."""
     return isinstance(obj, dict) and all([isinstance(val, type) for key, val in obj.items()])
 
+def is_list_of_instances(obj: Sequence,
+                         type) \
+        -> bool:
+    """Check that object is a list of objects of specified instance(s)."""
+    return isinstance(obj, list) and all([isinstance(val, type) for val in obj])
 
 def is_int_or_float(val) -> bool:
     return isinstance(val, (int, float, np.int64, np.float64))

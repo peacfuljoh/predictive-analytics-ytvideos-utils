@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ytpa-utils"
-version = "0.1.6"
+version = "0.1.7"
 description = "Utils for the YouTube Predictive Analytics system"
 authors = ["Johannes Traa"]
 license = "MIT"
@@ -10,9 +10,9 @@ readme = "README.md"
 python = "^3.11.5"
 pandas = "^2.0.3"
 numpy = "^1.25.2"
-pytest = "^7.4.3"
 
 [tool.poetry.dev-dependencies]
+pytest = "^7.4.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
