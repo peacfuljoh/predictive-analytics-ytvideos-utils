@@ -142,9 +142,11 @@ def test_df_dt_codec():
         datetime=datetimes
     ))
 
-    opts = dict(day=DT_FMT_DATE, datetime=DT_FMT_US)
+    func_encode_str = lambda df_col: df_col.astype(str)
+    opts = dict(day={'func': func_encode_str},
+                datetime={'func': func_encode_str})
     df2 = df.copy()
-    df_dt_codec(df2, opts, 'encode')
+    df_dt_codec(df2, opts)
 
     df_exp = pd.DataFrame(dict(
         day=['2020-05-05', '2020-05-06'],

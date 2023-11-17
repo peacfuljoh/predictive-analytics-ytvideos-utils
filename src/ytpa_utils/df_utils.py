@@ -1,6 +1,6 @@
 """ Array, DataFrame, and SQL ops """
 
-from typing import List, Optional
+from typing import List, Optional, Dict
 import pandas as pd
 import numpy as np
 
@@ -100,18 +100,11 @@ def get_duplicate_idxs(df: pd.DataFrame,
     return idxs
 
 def df_dt_codec(df: pd.DataFrame,
-                opts: dict,
-                mode: str):
+                opts: Dict[str, dict]):
     """
-    In-place conversion of specified columns (keys of opts) between strings and datetimes with specified format
-    (vals in opts).
-
-    encode: from timestamps or datetimes to strings
-    decode: from strings to datetime of specified formats
+    In-place conversion of specified columns (keys of opts) between strings and datetimes with specified format.
+    Input arg "opts" has a key for each column to be converted. For each column, the corresponding entry in "opts"
+    is a dict with key 'func' that provides a conversion function for a DataFrame column.
     """
-    assert mode in ['encode', 'decode']
-    for key, dt_fmt in opts.items():
-        if mode == 'encode':
-            df[key] = df[key].astype(str)
-        else:
-            raise NotImplementedError
+    for key, ops in opts.items():
+        df[key] = ops['func'](df[key])
