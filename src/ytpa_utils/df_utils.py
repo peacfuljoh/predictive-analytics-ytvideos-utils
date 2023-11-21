@@ -7,6 +7,9 @@ import numpy as np
 from .val_utils import is_subset, is_int_or_float
 
 
+pd.options.mode.chained_assignment = None
+
+
 
 def join_on_dfs(df0: pd.DataFrame,
                 df1: pd.DataFrame,
