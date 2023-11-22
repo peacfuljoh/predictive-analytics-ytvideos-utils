@@ -1,18 +1,18 @@
 """Miscellaneous utils"""
 
 import re
-from typing import Union, List, Optional, Tuple
+from typing import Union, List, Optional, Tuple, Callable
 import time
 from PIL import Image
 import requests
 import io
+from contextlib import redirect_stdout
 
 import pandas as pd
 
 
 
 
-""" Other """
 def convert_num_str_to_int(s: str) -> int:
     """
     Convert number strings to integers. Assumes resulting number is an integer. Handles strings of the form:
@@ -103,4 +103,10 @@ def just_dict_keys(obj: dict) -> Union[dict, None]:
         obj_keys[key] = just_dict_keys(val)
 
     return obj_keys
+
+def run_func_and_return_stdout(func: Callable) -> str:
+    """Run a function and return all stdout as a string"""
+    with redirect_stdout(io.StringIO()) as stdout_buf:
+        func()
+        return stdout_buf.getvalue()
 
