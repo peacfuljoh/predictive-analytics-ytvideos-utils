@@ -109,7 +109,6 @@ def df_dt_codec(df: pd.DataFrame,
     Input arg "opts" has a key for each column to be converted. For each column, the corresponding entry in "opts"
     is a dict with key 'func' that provides a conversion function for a DataFrame column.
     """
-    assert is_subset(opts, df)
     for key, ops in opts.items():
         if key in df:
             df[key] = ops['func'](df[key])

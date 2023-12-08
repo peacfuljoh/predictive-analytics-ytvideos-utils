@@ -139,18 +139,21 @@ def test_df_dt_codec():
 
     df = pd.DataFrame(dict(
         day=days,
-        datetime=datetimes
+        datetime=datetimes,
+        filler=[0, 1]
     ))
 
     func_encode_str = lambda df_col: df_col.astype(str)
     opts = dict(day={'func': func_encode_str},
-                datetime={'func': func_encode_str})
+                datetime={'func': func_encode_str},
+                other={'func': None})
     df2 = df.copy()
     df_dt_codec(df2, opts)
 
     df_exp = pd.DataFrame(dict(
         day=['2020-05-05', '2020-05-06'],
-        datetime=['2020-05-05 14:43:11.342435', '2020-05-05 19:43:11.342435']
+        datetime=['2020-05-05 14:43:11.342435', '2020-05-05 19:43:11.342435'],
+        filler=[0, 1]
     ))
 
     assert df2.equals(df_exp)
