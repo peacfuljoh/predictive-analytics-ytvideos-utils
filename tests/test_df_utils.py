@@ -2,9 +2,11 @@
 import pandas as pd
 import numpy as np
 import datetime
+from pandas import Timestamp
 
 from src.ytpa_utils.constants import DT_FMT_DATE, DT_FMT_US
-from src.ytpa_utils.df_utils import get_duplicate_idxs, join_on_dfs, convert_mixed_df_to_array, df_dt_codec
+from src.ytpa_utils.df_utils import (get_duplicate_idxs, join_on_dfs, convert_mixed_df_to_array, df_dt_codec,
+                                     resample_one_df_in_time)
 
 
 
@@ -157,3 +159,46 @@ def test_df_dt_codec():
     ))
 
     assert df2.equals(df_exp)
+
+def test_resample_one_df_in_time():
+    num_samps = 10
+
+    day = datetime.datetime.strptime('2020-05-05', DT_FMT_DATE)
+    dts = [day + datetime.timedelta(seconds=5 * i) for i in range(num_samps)]
+
+    df = pd.DataFrame(dict(
+        ts=dts,
+        id=['a'] * num_samps,
+        val=list(np.arange(num_samps))
+    ))
+
+    period = 3
+    df_out = resample_one_df_in_time(df, period, ['id'], ['val'], 'ts')
+
+    # print(df_out.to_dict())
+
+    df_expected = pd.DataFrame(
+        {'val': {0: 0.0, 1: 0.6000000000000002, 2: 1.2000000000000002, 3: 1.8000000000000003, 4: 2.400000000000001,
+                 5: 3.0, 6: 3.600000000000001, 7: 4.199999999999999, 8: 4.8, 9: 5.400000000000001, 10: 6.0,
+                 11: 6.6000000000000005, 12: 7.200000000000003, 13: 7.8000000000000025, 14: 8.400000000000002},
+         'ts': {0: Timestamp('2020-05-05 00:00:00'), 1: Timestamp('2020-05-05 00:00:03'),
+                2: Timestamp('2020-05-05 00:00:06'), 3: Timestamp('2020-05-05 00:00:09'),
+                4: Timestamp('2020-05-05 00:00:12'), 5: Timestamp('2020-05-05 00:00:15'),
+                6: Timestamp('2020-05-05 00:00:18'), 7: Timestamp('2020-05-05 00:00:21'),
+                8: Timestamp('2020-05-05 00:00:24'), 9: Timestamp('2020-05-05 00:00:27'),
+                10: Timestamp('2020-05-05 00:00:30'), 11: Timestamp('2020-05-05 00:00:33'),
+                12: Timestamp('2020-05-05 00:00:36'), 13: Timestamp('2020-05-05 00:00:39'),
+                14: Timestamp('2020-05-05 00:00:42')},
+         'id': {0: 'a', 1: 'a', 2: 'a', 3: 'a', 4: 'a', 5: 'a', 6: 'a', 7: 'a', 8: 'a', 9: 'a', 10: 'a', 11: 'a',
+                12: 'a', 13: 'a', 14: 'a'}}
+    )
+
+    assert df_out.equals(df_expected)
+
+
+
+
+
+if __name__ == '__main__':
+    test_resample_one_df_in_time()
+

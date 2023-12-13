@@ -1,10 +1,13 @@
 """ Array, DataFrame, and SQL ops """
 
 from typing import List, Optional, Dict
+import datetime
+
 import pandas as pd
 import numpy as np
 
 from .val_utils import is_subset, is_int_or_float
+from .np_utils import resample_arr
 
 
 pd.options.mode.chained_assignment = None
@@ -112,3 +115,41 @@ def df_dt_codec(df: pd.DataFrame,
     for key, ops in opts.items():
         if key in df:
             df[key] = ops['func'](df[key])
+
+def resample_one_df_in_time(df: pd.DataFrame,
+                            period: int,  # seconds
+                            cols_non_num: List[str],
+                            cols_num: List[str],
+                            col_ts: str,
+                            max_ts_gap: Optional[float] = None,
+                            omit_zeroes: bool = False) \
+        -> pd.DataFrame:
+    """
+    Resample numerical values in one DataFrame.
+    Each numerical column is resampled using cubic spline interpolation with the option to omit zeroes on a
+    column-specific basis.
+    """
+    cols_non_data = cols_non_num + [col_ts]
+
+    assert set(df) == set(cols_non_data + cols_num)
+
+    # get time and numerical columns into ndarray format
+    dt_start = df[col_ts].iloc[0]
+    ts: np.ndarray = (df[col_ts] - dt_start).dt.total_seconds().to_numpy()  # timestamps in seconds
+    data: np.ndarray = df.drop(columns=cols_non_data)[cols_num].to_numpy() # numerical data array
+
+    assert ~np.any(np.isnan(data))  # NaNs cause undefined behavior in interp1d
+
+    # interpolate
+    ts_resamp, data_resamp = resample_arr(ts, data, period, max_ts_gap=max_ts_gap, omit_zeroes=omit_zeroes)
+
+    # put together resampled DataFrame
+    dt_resamp = dt_start + ts_resamp * datetime.timedelta(seconds=1)
+    df_resamp = pd.concat((
+        pd.DataFrame(data_resamp, columns=cols_num),
+        pd.Series(dt_resamp, name=col_ts)
+    ), axis=1)
+    for col_id in cols_non_num:
+        df_resamp[col_id] = df.iloc[0][col_id]
+
+    return df_resamp
