@@ -193,7 +193,12 @@ def test_resample_one_df_in_time():
                 12: 'a', 13: 'a', 14: 'a'}}
     )
 
-    assert df_out.equals(df_expected)
+    try:
+        assert df_out.equals(df_expected)
+    except Exception as e:
+        print(df_out)
+        print(df_expected)
+        raise e
 
 
 
